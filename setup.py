@@ -6,6 +6,13 @@ TF_requires = ["tensorflow<2.11", # https://github.com/tensorflow/tensorflow/iss
                 "tensorflow_hub"
         ]
 
+PT_requires = ["torch", 
+                "torchvision", 
+                "torchtext", 
+                "torchdata",
+                "portalocker",
+        ]
+
 HF_requires = ["datasets"]
 
 setup(
@@ -25,7 +32,7 @@ setup(
                         "tqdm",
                         "scipy",
                         "gdown",
-                        "flexible",
+                        # "flexible",
                         "torch",
                         "torchtext",
                         "portalocker",
