@@ -1,3 +1,6 @@
+import torch
+
+
 def default_data_collator_classification(batch):
     """Default data collator for classification whether
     it expects just a batch that contains labels and text.
@@ -14,7 +17,6 @@ def default_data_collator_classification(batch):
     Returns:
         tuple: Tuple the text and the labels of the batch.
     """
-    import torch
     label_list, text_list = [], []
     for (_label, _text) in batch:
         label_list.append(_label)
@@ -39,7 +41,6 @@ def basic_collate_pad_sequence_classification(batch):
         tuple: Tuple containing the text padded with the pad_sequence
         function and the labels for the batch.
     """
-    import torch
     label_list, text_list = [], []
     for (_label, _text) in batch:
         label_list.append(_label)
