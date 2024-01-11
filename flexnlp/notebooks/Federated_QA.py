@@ -19,6 +19,10 @@ from flex.pool.decorators import init_server_model
 from flex.pool.decorators import deploy_server_model
 from flex.pool import deploy_server_model, deploy_server_model_pt
 from torch.utils.data import Dataset as TorchDataset
+from flex.pool import collect_clients_weights_pt
+from flex.pool import fed_avg
+from flex.pool import set_aggregated_weights_pt
+
 
 device = (
     "cuda"
@@ -269,12 +273,6 @@ def copy_server_model_to_clients(server_flex_model: FlexModel):
 servers.map(copy_server_model_to_clients, clients) # Using the function created with the decorator
 # servers.map(deploy_server_model_pt, clients) # Using the primitive function
 
-# Create a custom TorchDataset to use it with the Trainer
-class QADataset(TorchDataset):
-    def __init__(self, encodings, labels) -> None:
-        self.encodings = encodings
-        self.labels = labels
-
 # Train each client's model
 def train(client_flex_model: FlexModel, client_data: Dataset):
     print("Training client")
@@ -296,3 +294,11 @@ def train(client_flex_model: FlexModel, client_data: Dataset):
     trainer.train()
 
 clients.map(train)
+
+aggregators.map(collect_clients_weights_pt, clients)
+
+aggregators.map(fed_avg)
+
+aggregators.map(set_aggregated_weights_pt, servers)
+
+# TODO: Add the evaluate function
