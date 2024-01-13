@@ -1,4 +1,5 @@
 from copy import deepcopy
+from tqdm.auto import tqdm
 import torch
 import torch.nn as nn
 from datasets import load_dataset
@@ -22,6 +23,7 @@ from torch.utils.data import Dataset as TorchDataset
 from flex.pool import collect_clients_weights_pt
 from flex.pool import fed_avg
 from flex.pool import set_aggregated_weights_pt
+from flex.pool import evaluate_server_model
 
 
 device = (
@@ -38,7 +40,7 @@ print(device)
 # Load a percentage of squal
 squad = load_dataset("squad", split="train[:1%]")
 # Split 80% train, 20% test
-squad  = squad.train_test_split(test_size=0.2)
+squad  = squad.train_test_split(test_size=0.9)
 print(squad)
 
 # Preprocess functions
@@ -231,11 +233,6 @@ flex_dataset = FedDataDistribution.from_config_with_huggingface_dataset(data=tra
                                                                         # label_columns=['start_positions', 'end_positions']
                                                                         )
 
-# Adapt the test dataset to a FlexDataset
-test_dataset = Dataset.from_huggingface_dataset(test_dataset,
-                                                X_columns=['input_ids', 'attention_mask'])
-                                                # label_columns=['start_positions', 'end_positions'])
-
 # Init the server model and deploy it
 @init_server_model
 def build_server_model():
@@ -245,7 +242,7 @@ def build_server_model():
     # Required to store this for later stages of the FL training process
     server_flex_model['training_args'] = TrainingArguments(
         output_dir="my_awesome_qa_model",
-        evaluation_strategy="epoch",
+        # evaluation_strategy="epoch",
         learning_rate=2e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
@@ -302,3 +299,82 @@ aggregators.map(fed_avg)
 aggregators.map(set_aggregated_weights_pt, servers)
 
 # TODO: Add the evaluate function
+n_best = 20
+max_answer_length = 30
+predicted_answers = []
+metric = evaluate.load("squad")
+
+def compute_metrics(start_logits, end_logits, features, examples):
+    example_to_features = collections.defaultdict(list)
+    for idx, feature in enumerate(features):
+        example_to_features[feature["example_id"]].append(idx)
+
+    predicted_answers = []
+    for example in tqdm(examples):
+        example_id = example["id"]
+        context = example["context"]
+        answers = []
+
+        # Loop through all features associated with that example
+        for feature_index in example_to_features[example_id]:
+            start_logit = start_logits[feature_index]
+            end_logit = end_logits[feature_index]
+            offsets = features[feature_index]["offset_mapping"]
+
+            start_indexes = np.argsort(start_logit)[-1 : -n_best - 1 : -1].tolist()
+            end_indexes = np.argsort(end_logit)[-1 : -n_best - 1 : -1].tolist()
+            for start_index in start_indexes:
+                for end_index in end_indexes:
+                    # Skip answers that are not fully in the context
+                    if offsets[start_index] is None or offsets[end_index] is None:
+                        continue
+                    # Skip answers with a length that is either < 0 or > max_answer_length
+                    if (
+                        end_index < start_index
+                        or end_index - start_index + 1 > max_answer_length
+                    ):
+                        continue
+
+                    answer = {
+                        "text": context[offsets[start_index][0] : offsets[end_index][1]],
+                        "logit_score": start_logit[start_index] + end_logit[end_index],
+                    }
+                    answers.append(answer)
+
+        # Select the answer with the best score
+        if len(answers) > 0:
+            best_answer = max(answers, key=lambda x: x["logit_score"])
+            predicted_answers.append(
+                {"id": example_id, "prediction_text": best_answer["text"]}
+            )
+        else:
+            predicted_answers.append({"id": example_id, "prediction_text": ""})
+
+    theoretical_answers = [{"id": ex["id"], "answers": ex["answers"]} for ex in examples]
+    return metric.compute(predictions=predicted_answers, references=theoretical_answers)
+
+@evaluate_server_model
+def evaluate_global_model(server_flex_model: FlexModel, test_data=None):
+    model = server_flex_model["model"]
+    training_args = server_flex_model["training_args"]
+    trainer = Trainer(
+        model = model,
+        args=training_args,
+        train_dataset=test_data,
+        # eval_dataset=validation_dataset,
+        tokenizer=tokenizer,
+    # data_collator=data_collator,
+    )
+    predictions, _, _ = trainer.predict(test_data)
+    start_logits, end_logits = predictions
+    print(len(predictions[0]))
+    return compute_metrics(start_logits, end_logits, test_data, squad["test"])
+
+# predictions, _, _ = trainer.predict(validation_dataset)
+# start_logits, end_logits = predictions
+
+# print(len(predictions[0]))
+# compute_metrics(start_logits, end_logits, validation_dataset, squad["test"])
+metrics = servers.map(evaluate_global_model, test_data=test_dataset)
+
+print(metrics)
