@@ -37,6 +37,8 @@ setup(
                         "torchtext",
                         "portalocker",
                         "torchdata",
+                        "datasets",
+                        "transformers"
                         ],
         extras_require={
                 "tensorflow": TF_requires,

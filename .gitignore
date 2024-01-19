@@ -163,4 +163,5 @@ data/
 
 # Experimental files
 notebooks/.vector_cache/*
-notebooks/my_awesome_qa_model/runs*
+notebooks/my_awesome_qa_model/runs/*
+flexnlp/notebooks/my_awesome_qa_model/runs/*
