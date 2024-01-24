@@ -6,3 +6,4 @@ from __future__ import print_function
 # from flexnlp.utils.collators import classification_sampler
 # from flexnlp.utils.collators import ClassificationCollator
 from flexnlp.utils import collators
+from flexnlp.utils import adapters

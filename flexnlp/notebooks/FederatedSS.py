@@ -22,6 +22,7 @@ from flex.pool import collect_clients_weights_pt
 from flex.pool import fed_avg
 from flex.pool import set_aggregated_weights_pt
 from flex.pool import evaluate_server_model
+from flexnlp.utils.adapters import ss_triplet_input_adapter
 
 device = (
     "cuda"
@@ -116,7 +117,7 @@ def train(client_flex_model: FlexModel, client_data: Dataset):
     X_data = client_data.X_data.tolist()
     tam_train = int(len(X_data) * 0.75)
     X_data, X_test = X_data[:tam_train], X_data[tam_train:]
-    train_dataloader, dev_examples = create_input_examples_for_training(X_data_as_list=X_data, X_test_as_list=X_test)
+    train_dataloader, dev_examples = ss_triplet_input_adapter(X_data_as_list=X_data, X_test_as_list=X_test)
     train_loss = losses.TripletLoss(model=model)
     evaluator = TripletEvaluator.from_input_examples(dev_examples)
     warmup_steps = int(len(train_dataloader) * 1 * 0.1) #10% of train data
@@ -152,7 +153,7 @@ test_dataset = Dataset.from_huggingface_dataset(test_dataset, X_columns=['set'])
 
 @evaluate_server_model
 def evaluate_global_model(server_flex_model: FlexModel, test_data=None):
-    X_test = create_input_examples_for_testing(X_test_as_list=test_dataset.X_data.tolist())
+    X_test = ss_triplet_input_adapter(X_test_as_list=test_dataset.X_data.tolist(), train=False)
     model = server_flex_model["model"]
     evaluator = TripletEvaluator.from_input_examples(X_test)
     model.evaluate(evaluator, 'server_evaluation')
