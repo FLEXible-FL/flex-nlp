@@ -25,7 +25,7 @@ def ss_triplet_input_adapter(X_train_as_list: list = None, X_test_as_list: list 
     train_examples = None
     dev_examples = None
     if train and len(X_train_as_list) > 1:
-        train_examples = [InputExample(texts=[example['query'], example['pos'][0], example['neg'][0]]) for example in X_data_as_list]
+        train_examples = [InputExample(texts=[example['query'], example['pos'][0], example['neg'][0]]) for example in X_train_as_list]
         train_examples = DataLoader(train_examples, shuffle=shuffle, batch_size=batch_size)
     if test and len(X_test_as_list) > 1:
         dev_examples = [InputExample(texts=[example['query'], example['pos'][0], example['neg'][0]]) for example in X_test_as_list]
