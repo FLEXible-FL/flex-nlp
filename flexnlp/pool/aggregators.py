@@ -20,8 +20,8 @@ def clip_avg_f(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
             weights_per_layer.append(w)
         weights_per_layer = tl.stack(weights_per_layer)
         clip_threshold = np.quantile(weights_per_layer, clip_threshold)
-        clipped_layer = tl.sum(tl.clip(weights_per_layer, -clip_threshold, clip_threshold), axis=0)
-        agg_weights.append(clipped_layer)
+        sum_clipped_layer = tl.sum(tl.clip(weights_per_layer, -clip_threshold, clip_threshold), axis=0)
+        agg_weights.append(sum_clipped_layer)
     return agg_weights
 
 @aggregate_weights
