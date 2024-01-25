@@ -42,8 +42,8 @@ def basic_collate_pad_sequence_classification(batch):
         function and the labels for the batch.
     """
     label_list, text_list = [], []
-    for (_label, _text) in batch:
+    for (_text, _label) in batch:
         label_list.append(_label)
-        text_list.append(torch.tensor(_text)) if not isinstance(_text, torch.tensor) else text_list.append(_text)
+        text_list.append(_text) if torch.is_tensor(_text) else text_list.append(torch.tensor(_text))
     label_list = torch.tensor(label_list, dtype=torch.int64)
     return torch.nn.utils.rnn.pad_sequence(text_list, batch_first=True), label_list
