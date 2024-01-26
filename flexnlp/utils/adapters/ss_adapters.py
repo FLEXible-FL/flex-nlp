@@ -30,4 +30,4 @@ def ss_triplet_input_adapter(X_train_as_list: list = None, X_test_as_list: list 
     if test and len(X_test_as_list) > 1:
         dev_examples = [InputExample(texts=[example['query'], example['pos'][0], example['neg'][0]]) for example in X_test_as_list]
 
-    return train_examples, dev_examples        
+    return train_examples, dev_examples

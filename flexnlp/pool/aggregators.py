@@ -7,7 +7,7 @@ This aggregators also can work as examples for creating a custom aggregator.
 import numpy as np
 import tensorly as tl
 from flex.pool.decorators import aggregate_weights
-from flex.pool.decorators import set_tensorly_backend
+from flex.pool.aggregators import set_tensorly_backend
 
 
 def clip_avg_f(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
@@ -19,20 +19,20 @@ def clip_avg_f(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
             w = tl.tensor(client_weights[layer_index])
             weights_per_layer.append(w)
         weights_per_layer = tl.stack(weights_per_layer)
-        clip_threshold = np.quantile(weights_per_layer, clip_threshold)
-        sum_clipped_layer = tl.sum(tl.clip(weights_per_layer, -clip_threshold, clip_threshold), axis=0)
+        clip_thresh = np.percentile(weights_per_layer, clip_threshold*100, axis=0)
+        sum_clipped_layer = tl.mean(tl.clip(weights_per_layer, -clip_thresh, clip_thresh), axis=0)
         agg_weights.append(sum_clipped_layer)
     return agg_weights
 
 @aggregate_weights
-def clip_avg(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
-    """Aggregate the weights using the clip average method.
-    This function calculates the quantile of the weights of each layer and
+def clip_avg(aggregated_weights_as_list: list, clip_threshold: float = 0.9):
+    """Aggregate the weights using the clip average aggregation method.
+    This function calculates the percentile of the weights of each layer and
     then clips the weights to the interval [-quantile, quantile].
 
     Args:
-        aggregate_weights_as_list (list): List of weights to aggregate.
-        clip_threshold (float, optional): Quantile threshold to apply to each
+        aggregated_weights_as_list (list): List of weights to aggregate.
+        clip_threshold (float, optional): Percentile threshold to apply to each
         layer. Defaults to 0.9.
 
     Returns:
@@ -43,15 +43,15 @@ def clip_avg(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
 
         aggregator = flex.pool.aggregators
         server = flex.pool.servers
-        clip_threshold = 0.98 # quantile to clip the weights
+        clip_threshold = 0.9 # percentile to clip the weights
         aggregator.map(server, clip_avg, clip_threshold)
 
     Example of use using the FlePool without separating server
     and aggregator, and following a client-server architecture:
 
         from flex.pool.primitives import clip_avg
-        clip_threshold = 0.98 # quantile to clip the weights
+        clip_threshold = 0.9 # percentile to clip the weights
         flex_pool.aggregators.map(flex_pool.servers, clip_avg, clip_threshold=clip_threshold)    
     """
-    set_tensorly_backend()
-    return clip_avg_f(aggregate_weights_as_list, clip_threshold)
+    set_tensorly_backend(aggregated_weights_as_list)
+    return clip_avg_f(aggregated_weights_as_list, clip_threshold)
