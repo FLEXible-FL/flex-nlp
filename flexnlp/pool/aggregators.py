@@ -13,13 +13,14 @@ from flex.pool.aggregators import set_tensorly_backend
 def clip_avg_f(aggregate_weights_as_list: list, clip_threshold: float = 0.9):
     n_layers = len(aggregate_weights_as_list[0])
     agg_weights = []
+    device = aggregate_weights_as_list[0][0].device
     for layer_index in range(n_layers):
         weights_per_layer = []
         for w in aggregate_weights_as_list:
             # w = tl.tensor(client_weights[layer_index])
             weights_per_layer.append(w[layer_index])
         weights_per_layer = tl.stack(weights_per_layer)
-        clip_thresh = tl.tensor(np.percentile(weights_per_layer, clip_threshold*100, axis=0))
+        clip_thresh = tl.tensor(np.percentile(weights_per_layer.cpu(), clip_threshold*100, axis=0)).to(device)
         sum_clipped_layer = tl.mean(tl.clip(weights_per_layer, -clip_thresh, clip_thresh), axis=0)
         agg_weights.append(sum_clipped_layer)
     return agg_weights
