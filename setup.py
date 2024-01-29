@@ -1,19 +1,12 @@
 from setuptools import find_packages, setup
 
 
-TF_requires = ["tensorflow<2.11", # https://github.com/tensorflow/tensorflow/issues/58973
-                "tensorflow_datasets", 
-                "tensorflow_hub"
-        ]
-
 PT_requires = ["torch", 
                 "torchvision", 
                 "torchtext", 
                 "torchdata",
                 "portalocker",
         ]
-
-HF_requires = ["datasets"]
 
 setup(
         name="flexnlp",
@@ -38,19 +31,17 @@ setup(
                         "portalocker",
                         "torchdata",
                         "datasets",
-                        "transformers"
+                        "transformers",
+                        "sentence_transformers",
+                        "sentencepiece",
                         ],
         extras_require={
-                "tensorflow": TF_requires,
                 "pytorch": PT_requires,
-                "hugginface": HF_requires,
                 "develop": ["pytest",
                         "pytest-cov",
                         "pytest-xdist",
                         "coverage",
                         "jinja2",
-                        *TF_requires,
-                        *HF_requires
                         ],
         },
         python_requires=">=3.8.10",
