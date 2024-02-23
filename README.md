@@ -2,7 +2,11 @@
 
 The flex-nlp package consists of a set of tools and utilities to work with Natural Language Processing (NLP) datasets and models. It is designed to be used with the [FLEXible](https://github.com/FLEXible-FL/FLEXible/) framework, as it is an extension of it.
 
-flex-nlp comes with some tools to work with NLP datasets, such as sampling and collating. It also provides tools to adapt external datasets to the FLEXible framework, like the Triplet Dataset tipically used in Sentence Similarity tasks.
+flex-nlp comes with some tools to work with NLP datasets, that are the following ones:
+
+- `ss_triplet_input_adapter` a Semantic Textual Similarity (STS) dataset adapter: It is a dataset adapter that allows to work with the TripletQQP dataset and other datasets that are similar to it.
+- `default_data_collator_classification`: It is a data collator that allows to work with the classification task, and it is the default data collator for the classification task.
+- `basic_collate_pad_sequence_classification`: It is a data collator that allows to work with the classification task, and it is a basic data collator for the classification task. This collator pads the sequences to the maximum length of the batch, and it puts the batch dimension in the first position.
 
 We also provide an aggregator to work with neural networks, clip_avg. Alonside, we have used some aggregator available in the [FLEXible](https://github.com/FLEXible-FL/FLEXible/) framework.
 
@@ -12,8 +16,6 @@ We also provide an aggregator to work with neural networks, clip_avg. Alonside, 
 | clip_avg | It is a federated aggregator that clips the weights recieved by the clients, averaging only those that surpass a selected threshold. | [Reviewing Federated Learning Aggregation Algorithms; Strategies, Contributions, Limitations and Future Perspectives](https://www.mdpi.com/2079-9292/12/10/2287) |
 | fedavg | It is a federated aggregator that compute the mean of the weights recieved by the clients. | [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629) |
 | weighted_avg | Similar to fedavg, it is a federated aggregator that add weights to the clients in order of giving more importance to some clients than to another clients. | [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629) |
-
-
 
 ##  Tutorials
 
@@ -49,7 +51,7 @@ pip install flex-nlp
 
 Download the repository and install it locally:
 ```
-git clone https://github.com/FLEXible-FL/flex-nlp.git
+git clone git@github.com:FLEXible-FL/flex-nlp.git
 cd flex-nlp
 pip install -e .
 ```
