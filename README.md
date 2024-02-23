@@ -46,7 +46,7 @@ To install the package, you can use the following commands:
 
 Using pip:
 ```
-pip install flex-nlp
+pip install flexnlp
 ```
 
 Download the repository and install it locally:
