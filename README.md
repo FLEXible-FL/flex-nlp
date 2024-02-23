@@ -16,9 +16,9 @@ In the following we detail the tasks and the datasets used in the notebooks:
 
 | `Task`            | `Model`      | `Dataset`              |
 | ------------------ | ------------------ | ------------------- |
-| Sentiment Analysis | [BiGRU](https://arxiv.org/abs/1412.3555) | [IMDb](https://ai.stanford.edu/~amaas/data/sentiment/) |
-| Question Answering | [DistilBERT](https://arxiv.org/abs/1910.01108) | [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) |
-| Semantic Textual Similarity | [DistilRoberta](https://arxiv.org/abs/1907.11692) | [QQP-Triplets](https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs) |
+| Sentiment Analysis (SA) | [BiGRU](https://arxiv.org/abs/1412.3555) | [IMDb](https://ai.stanford.edu/~amaas/data/sentiment/) |
+| Question Answering (QA) | [DistilBERT](https://arxiv.org/abs/1910.01108) | [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) |
+| Semantic Textual Similarity (STS) | [DistilRoberta](https://arxiv.org/abs/1907.11692) | [QQP-Triplets](https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs) |
 
 ## Installation
 
@@ -27,6 +27,7 @@ We recommend Anaconda/Miniconda as the package manager. The following is the cor
 | `flex`            | `flex-nlp`      | Python              |
 | ------------------ | ------------------ | ------------------- |
 | `main` / `nightly` | `main` / `nightly` | `>=3.8`, `<=3.11`   |
+| `v0.6.0`           | `v0.1.0`           | `>=3.8`, `<=3.11`    |
 
 To install the package, you can use the following commands:
 
