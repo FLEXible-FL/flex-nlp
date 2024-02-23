@@ -4,6 +4,17 @@ The flex-nlp package consists of a set of tools and utilities to work with Natur
 
 flex-nlp comes with some tools to work with NLP datasets, such as sampling and collating. It also provides tools to adapt external datasets to the FLEXible framework, like the Triplet Dataset tipically used in Sentence Similarity tasks.
 
+We also provide an aggregator to work with neural networks, clip_avg. Alonside, we have used some aggregator available in the [FLEXible](https://github.com/FLEXible-FL/FLEXible/) framework.
+
+
+| `Aggregator`            | `Description`      | `Citation`              |
+| ------------------ | :------------------: | -------------------: |
+| clip_avg | It is a federated aggregator that clips the weights recieved by the clients, averaging only those that surpass a selected threshold. | [Reviewing Federated Learning Aggregation Algorithms; Strategies, Contributions, Limitations and Future Perspectives](https://www.mdpi.com/2079-9292/12/10/2287) |
+| fedavg | It is a federated aggregator that compute the mean of the weights recieved by the clients. | [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629) |
+| weighted_avg | Similar to fedavg, it is a federated aggregator that add weights to the clients in order of giving more importance to some clients than to another clients. | [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629) |
+
+
+
 ##  Tutorials
 
 To get started with flex-nlp, you can check the [notebooks](https://github.com/FLEXible-FL/flex-nlp/tree/main/notebooks) available in the repository. They cover the following topics:
@@ -12,10 +23,10 @@ To get started with flex-nlp, you can check the [notebooks](https://github.com/F
 - [Question Answering using the SQuAD dataset with DistilBERT model](https://github.com/FLEXible-FL/flex-nlp/blob/main/notebooks/Federated%20QA%20with%20Hugginface%20using%20FLEXIBLE.ipynb).
 - [Semantic Textual Similarity using the QQP-Triplets dataset with a distilled version of Roberta](https://github.com/FLEXible-FL/flex-nlp/blob/main/notebooks/Federated%20SS%20with%20SentenceTransformers%20using%20FLEXible.ipynb).
 
-In the following we detail the tasks and the datasets used in the notebooks:
+In the following we detail the tasks, models, and the datasets used in the notebooks:
 
 | `Task`            | `Model`      | `Dataset`              |
-| ------------------ | ------------------ | ------------------- |
+| ------------------ | :------------------: | -------------------: |
 | Sentiment Analysis (SA) | [BiGRU](https://arxiv.org/abs/1412.3555) | [IMDb](https://ai.stanford.edu/~amaas/data/sentiment/) |
 | Question Answering (QA) | [DistilBERT](https://arxiv.org/abs/1910.01108) | [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) |
 | Semantic Textual Similarity (STS) | [DistilRoberta](https://arxiv.org/abs/1907.11692) | [QQP-Triplets](https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs) |
@@ -25,7 +36,7 @@ In the following we detail the tasks and the datasets used in the notebooks:
 We recommend Anaconda/Miniconda as the package manager. The following is the corresponding `flex-nlp` versions and supported Python versions.
 
 | `flex`            | `flex-nlp`      | Python              |
-| ------------------ | ------------------ | ------------------- |
+| :------------------: | :------------------: | :-------------------: |
 | `main` / `nightly` | `main` / `nightly` | `>=3.8`, `<=3.11`   |
 | `v0.6.0`           | `v0.1.0`           | `>=3.8`, `<=3.11`    |
 
