@@ -23,9 +23,9 @@ We recommend Anaconda/Miniconda as the package manager. The following is the cor
 To install the package, you can use the following commands:
 
 Using pip:
-``
+```
     pip install flex-nlp
-``
+```
 
 Download the repository and install it locally:
 ```
