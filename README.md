@@ -28,11 +28,11 @@ Using pip:
 ``
 
 Download the repository and install it locally:
-``
-- git clone https://github.com/FLEXible-FL/flex-nlp.git
-- cd flex-nlp
-- pip install -e .
-``
+```
+git clone https://github.com/FLEXible-FL/flex-nlp.git
+cd flex-nlp
+pip install -e .
+```
 
 ## Citation
 
