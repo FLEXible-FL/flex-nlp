@@ -165,3 +165,4 @@ data/
 notebooks/.vector_cache/*
 notebooks/my_awesome_qa_model/runs/*
 flexnlp/notebooks/my_awesome_qa_model/runs/*
+flexnlp/notebooks/*
