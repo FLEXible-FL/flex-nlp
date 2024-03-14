@@ -26,7 +26,7 @@ PT_requires = ["torch",
 
 setup(
         name="flexnlp",
-        version="0.0.1",
+        version="0.1.0",
         author="Cristina Zuheros-Montes and Argente-Garrido Alberto",
         long_description=open("README.md", "r", encoding="utf-8").read(),
         long_description_content_type="text/markdown",
@@ -41,7 +41,7 @@ setup(
                         "tqdm",
                         "scipy",
                         "gdown",
-                        # "flexible",
+                        "flexible-fl",
                         "torch",
                         "torchtext",
                         "portalocker",
